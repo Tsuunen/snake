@@ -60,15 +60,23 @@ class Game:
                             self.player.y_direction = 0
                     elif event.key == pygame.K_a:
                         self.player.add_cell()
+                    elif event.key == pygame.K_r:
+                        self.player.__init__(self.screen)
                 if event.type == pygame.QUIT:
                     running = False
 
             self.player.move()
 
+            if pygame.Rect.collidelist(self.player.body[-1], self.player.body[:-1]) != -1:
+                self.player.__init__(self.screen)
+
             # Dessiner tout à l'écran
             self.screen.fill((0, 0, 0))
             self.player.display()
             pygame.display.flip()
+
+            # if pygame.Rect.collidelist(self.player.body[-1], self.player.body[:-1]) != -1:
+            #     self.player.__init__(self.screen)
 
             # Contrôle du FPS
             self.clock.tick(10)
