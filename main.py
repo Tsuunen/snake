@@ -33,10 +33,11 @@ class Snake():
 
 
 class Apple:
-    def __init__(self, screen) -> None:
+    def __init__(self, screen, snake) -> None:
         self.screen = screen
-        self.coords = (randint(0, SCREEN_WIDTH // 20), randint(0, SCREEN_HEIGHT // 20))
+        self.coords = (randint(0, SCREEN_WIDTH // 20 - 1), randint(0, SCREEN_HEIGHT // 20 - 1))
         self.apple = pygame.Rect(self.coords[0] * 20, self.coords[1] * 20, 20, 20)
+        self.snake = snake
 
     def display(self):
         self.apple.x = self.coords[0] * 20
@@ -44,7 +45,15 @@ class Apple:
         pygame.draw.rect(self.screen, "red", self.apple)
 
     def change_coords(self):
-        self.coords = (randint(0, SCREEN_WIDTH // 20), randint(0, SCREEN_HEIGHT // 20))
+        self.coords = (randint(0, SCREEN_WIDTH // 20 - 1), randint(0, SCREEN_HEIGHT // 20 - 1))
+        self.check_if_spawn_into_snake()
+
+    def check_if_spawn_into_snake(self):
+        body_coords = [(rect.x, rect.y) for rect in self.snake.body]
+        coords = (self.coords[0] * 20, self.coords[1] * 20)
+
+        if coords in body_coords:
+            self.change_coords()
 
          
 
@@ -55,7 +64,7 @@ class Game:
         pygame.display.set_caption("Snake")
         self.clock = pygame.time.Clock()
         self.player = Snake(self.screen)
-        self.apple = Apple(self.screen)
+        self.apple = Apple(self.screen, self.player)
 
     def run(self):
         running = True
