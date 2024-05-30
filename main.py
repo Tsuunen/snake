@@ -4,9 +4,13 @@ from random import randint
 
 
 pygame.init()
+pygame.font.init()
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+score_font = pygame.font.SysFont('liberation', 70)
+old_score_font = pygame.font.SysFont('liberation', 35)
 
 class Snake():
     def __init__(self, screen) -> None:
@@ -57,14 +61,15 @@ class Apple:
 
          
 
-
 class Game:
     def __init__(self):
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT + 100))
         pygame.display.set_caption("Snake")
         self.clock = pygame.time.Clock()
         self.player = Snake(self.screen)
         self.apple = Apple(self.screen, self.player)
+        self.score = 0
+        self.old_score = 0
 
     def run(self):
         running = True
@@ -98,20 +103,25 @@ class Game:
 
             if pygame.Rect.collidelist(self.player.body[-1], self.player.body[:-1]) != -1:
                 self.player.__init__(self.screen)
+                self.old_score = self.score
+                self.score = 0
 
             if pygame.Rect.colliderect(self.player.body[-1], self.apple.apple):
                 self.player.add_cell()
                 self.apple.change_coords()
+                self.score += 1
 
             # Dessiner tout à l'écran
             self.screen.fill((0, 0, 0))
             self.apple.display() 
             self.player.display()
+
+            pygame.draw.line(self.screen, "white", (0, 600), (800, 600))
+            score_text = score_font.render(str(self.score), True, "white")
+            old_score_text = old_score_font.render(str(self.old_score), True, "white")
+            self.screen.blit(score_text, (30, 630))
+            self.screen.blit(old_score_text, (770, 650))
             pygame.display.flip()
-
-
-            # if pygame.Rect.collidelist(self.player.body[-1], self.player.body[:-1]) != -1:
-            #     self.player.__init__(self.screen)
 
             # Contrôle du FPS
             self.clock.tick(10)
