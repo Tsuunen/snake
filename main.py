@@ -71,6 +71,15 @@ class Game:
         self.score = 0
         self.old_score = 0
 
+    def draw_bg(self):
+        is_drawing = True
+        for i in range(0, 600, 20):
+            for j in range(0, 800, 20):
+                if is_drawing:
+                    pygame.draw.rect(self.screen, (60, 60, 60), pygame.Rect(j, i, 20, 20))
+                is_drawing = not is_drawing
+            is_drawing = not is_drawing
+
     def run(self):
         running = True
         while running:
@@ -113,6 +122,7 @@ class Game:
 
             # Dessiner tout à l'écran
             self.screen.fill((0, 0, 0))
+            self.draw_bg()
             self.apple.display() 
             self.player.display()
 
@@ -128,6 +138,7 @@ class Game:
 
         pygame.quit()
         sys.exit()
+
 
 if __name__ == "__main__":
     game = Game()
